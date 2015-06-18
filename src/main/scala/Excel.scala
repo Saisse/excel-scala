@@ -36,7 +36,15 @@ class Sheet(sheet: PoiSheet) {
     }
     })
   }
-  private def string(address: (Int, Int)): String = poiCell(address).getRichStringCellValue.getString
+  private def string(address: (Int, Int)): String = {
+    val c = poiCell(address)
+
+    c.getCellType() match {
+      case PoiCell.CELL_TYPE_STRING => c.getRichStringCellValue.getString
+      case PoiCell.CELL_TYPE_FORMULA => c.getRichStringCellValue.getString
+      case PoiCell.CELL_TYPE_NUMERIC => c.getNumericCellValue.toString
+    }
+  }
 
   private def opt[V](address: (Int, Int), toValue: ((Int, Int)) => Option[V]): Option[V] = {
     exists(address) match {
