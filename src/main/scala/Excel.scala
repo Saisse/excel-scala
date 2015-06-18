@@ -1,6 +1,6 @@
 package com.github.saisse.excel_scala
 
-import java.io.{File, FileInputStream}
+import java.io.{File, FileInputStream, InputStream}
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.{Sheet => PoiSheet, Workbook => PoiWorkbook, Cell => PoiCell}
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
@@ -99,13 +99,27 @@ object Cell {
 
 object Book {
   def apply(path: String): Book = {
+    new Book(poiWorkbook(path))
+  }
+
+  def apply(file: File): Book = {
+    new Book(poiWorkbook(file))
+  }
+
+  def poiWorkbook(path: String): PoiWorkbook = {
     val stream = new File(path).exists() match {
       case true => new FileInputStream(path)
       case false => getClass().getResourceAsStream(path)
     }
-    new Book(path match {
+    workbook(path, stream)
+  }
+
+  def poiWorkbook(file: File): PoiWorkbook = workbook(file.getAbsolutePath, new FileInputStream(file))
+
+  private def workbook(path: String, stream: InputStream): PoiWorkbook = {
+    path match {
       case p if p.endsWith(".xlsx") => new XSSFWorkbook(stream)
       case p if p.endsWith(".xls") => new HSSFWorkbook(stream)
-    })
+    }
   }
 }
