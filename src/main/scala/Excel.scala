@@ -45,7 +45,6 @@ class Sheet(sheet: PoiSheet) {
       case PoiCell.CELL_TYPE_FORMULA => c.getRichStringCellValue.getString
       case PoiCell.CELL_TYPE_NUMERIC => {
         val cf = CellFormat.getInstance(c.getCellStyle.getDataFormatString)
-//        c.getNumericCellValue.toString
         cf.apply(c).text
       }
     }
