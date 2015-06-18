@@ -29,15 +29,26 @@ class SheetSpec extends FlatSpec with Matchers {
     sheet.string("A3") should be ("テスト")
     sheet.string("A4") should be ("Aテスト")
 
+    sheet.stringOpt("A4") should be (Some("Aテスト"))
+    sheet.stringOpt("A5") should be (None)
+
     sheet.double("B2") should be (2)
     sheet.double("B3") should be (3.4)
     sheet.double("B4") should be (5.4)
+
+    sheet.doubleOpt("B4") should be (Some(5.4))
+    sheet.doubleOpt("B5") should be (None)
 
     sheet.int("B2") should be (2)
     sheet.int("B3") should be (3)
     sheet.int("B4") should be (5)
 
-    sheet.dateTIme("C2") should be(DateTime.parse("2014/12/30", DateTimeFormat.forPattern("yyyy/MM/dd")))
+    sheet.intOpt("B4") should be (Some(5))
+    sheet.intOpt("B5") should be (None)
+
+    sheet.dateTime("C2") should be(DateTime.parse("2014/12/30", DateTimeFormat.forPattern("yyyy/MM/dd")))
+    sheet.dateTimeOpt("C2") should be(Some(DateTime.parse("2014/12/30", DateTimeFormat.forPattern("yyyy/MM/dd"))))
+    sheet.dateTimeOpt("C3") should be(None)
   }
 
   it should "listRows" in {

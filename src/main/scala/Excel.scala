@@ -23,25 +23,39 @@ class Sheet(sheet: PoiSheet) {
     listRows(startRow, end).map(row => parser(row))
   }
 
-  def string(cell: String): String = {
+  def cell(column: String, row: Int): String = s"$column$row"
+
+  def string(cell: String): String = string(Cell.split(cell))
+  def stringOpt(cell: String): Option[String] = {
     val address = Cell.split(cell)
-    poiCell(address).getRichStringCellValue.getString
+
+    opt(address, (address: (Int, Int)) => {
+      string(address) match {
+      case "" => None
+      case s => Some(s)
+    }
+    })
+  }
+  private def string(address: (Int, Int)): String = poiCell(address).getRichStringCellValue.getString
+
+  private def opt[V](address: (Int, Int), toValue: ((Int, Int)) => Option[V]): Option[V] = {
+    exists(address) match {
+      case true => toValue(address)
+      case false => None
+    }
   }
 
-  def double(cell: String): Double = {
-    val address = Cell.split(cell)
-    poiCell(address).getNumericCellValue
-  }
+  def double(cell: String): Double = double(Cell.split(cell))
+  def doubleOpt(cell: String): Option[Double] = opt(Cell.split(cell), (a: (Int, Int)) => Some(double(a)))
+  private def double(address: (Int, Int)): Double = poiCell(address).getNumericCellValue
 
-  def int(cell: String): Int = {
-    val address = Cell.split(cell)
-    poiCell(address).getNumericCellValue.toInt
-  }
+  def int(cell: String): Int = int(Cell.split(cell))
+  def intOpt(cell: String): Option[Int] = opt(Cell.split(cell), (a: (Int, Int)) => Some(int(a)))
+  private def int(address: (Int, Int)): Int = poiCell(address).getNumericCellValue.toInt
 
-  def dateTIme(cell: String): DateTime = {
-    val address = Cell.split(cell)
-    new DateTime(poiCell(address).getDateCellValue.getTime)
-  }
+  def dateTime(cell: String): DateTime = dateTime(Cell.split(cell))
+  def dateTimeOpt(cell: String): Option[DateTime] = opt(Cell.split(cell), (a: (Int, Int)) => Some(dateTime(a)))
+  private def dateTime(address: (Int, Int)): DateTime = new DateTime(poiCell(address).getDateCellValue.getTime)
 
   private def poiCell(address: (Int, Int)): PoiCell = {
     val (c, r) = address
