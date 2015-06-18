@@ -43,6 +43,7 @@ class Sheet(sheet: PoiSheet) {
     c.getCellType() match {
       case PoiCell.CELL_TYPE_STRING => c.getRichStringCellValue.getString
       case PoiCell.CELL_TYPE_FORMULA => c.getRichStringCellValue.getString
+      case PoiCell.CELL_TYPE_BLANK => ""
       case PoiCell.CELL_TYPE_NUMERIC => {
         val cf = CellFormat.getInstance(c.getCellStyle.getDataFormatString)
         cf.apply(c).text
