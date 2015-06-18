@@ -3,6 +3,7 @@ package com.github.saisse.excel_scala
 import java.io.{File, FileInputStream, InputStream}
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.{Sheet => PoiSheet, Workbook => PoiWorkbook, Cell => PoiCell}
+import org.apache.poi.ss.format.CellFormat
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.joda.time.DateTime
 
@@ -42,7 +43,11 @@ class Sheet(sheet: PoiSheet) {
     c.getCellType() match {
       case PoiCell.CELL_TYPE_STRING => c.getRichStringCellValue.getString
       case PoiCell.CELL_TYPE_FORMULA => c.getRichStringCellValue.getString
-      case PoiCell.CELL_TYPE_NUMERIC => c.getNumericCellValue.toString
+      case PoiCell.CELL_TYPE_NUMERIC => {
+        val cf = CellFormat.getInstance(c.getCellStyle.getDataFormatString)
+//        c.getNumericCellValue.toString
+        cf.apply(c).text
+      }
     }
   }
 
@@ -51,6 +56,13 @@ class Sheet(sheet: PoiSheet) {
       case true => toValue(address)
       case false => None
     }
+  }
+
+  def print(cell: String): Unit = {
+    val c = poiCell(Cell.split(cell))
+    println(s"${c.getCellType}")
+    println(s"${c.getCellStyle.getDataFormat}")
+    println(s"${c.getCellStyle.getDataFormatString}")
   }
 
   def double(cell: String): Double = double(Cell.split(cell))
