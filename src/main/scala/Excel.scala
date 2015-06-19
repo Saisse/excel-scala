@@ -26,7 +26,7 @@ class Sheet(sheet: PoiSheet) {
     listRows(startRow, end).map(row => parser(row))
   }
 
-  def cell(column: String, row: Int): String = s"$column$row"
+  def cell(column: String, row: Int): String = Cell.cell(column, row)
 
   def string(cell: String): String = string(Cell.split(cell))
   def stringOpt(cell: String): Option[String] = {
@@ -88,6 +88,8 @@ class Sheet(sheet: PoiSheet) {
     exists(Cell.split(cell))
   }
 
+  def rowParser(row: Int) = new RowParser(this, row)
+
   private def exists(address: (Int, Int)): Boolean = {
     val (c, r) = address
     sheet.getRow(r) match {
@@ -103,6 +105,8 @@ object Cell {
     val r = cell.filter(c => c.isDigit)
     (toColumnIndex(c), r.toInt - 1)
   }
+
+  def cell(column: String, row: Int): String = s"$column$row"
 
   private val columMap = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".zipWithIndex.map{ case (a, n) => (a, n)}.toMap
 
@@ -144,4 +148,23 @@ object Book {
       case p if p.endsWith(".xls") => new HSSFWorkbook(stream)
     }
   }
+}
+
+class RowParser(sheet: Sheet, row: Int) {
+  private def cell(column: String, row: Int) = Cell.cell(column, row)
+
+  def string(column: String) = sheet.string(cell(column, row))
+  def stringOpt(column: String) = sheet.stringOpt(cell(column, row))
+
+  def double(column: String) = sheet.double(cell(column, row))
+  def doubleOpt(column: String) = sheet.doubleOpt(cell(column, row))
+
+  def int(column: String) = sheet.int(cell(column, row))
+  def intOpt(column: String) = sheet.intOpt(cell(column, row))
+
+  def dateTime(column: String) = sheet.dateTime(cell(column, row))
+  def dateTimeOpt(column: String) = sheet.dateTimeOpt(cell(column, row))
+
+  def exists(column: String) = sheet.exists(cell(column, row))
+  def parse[A](row: Int)(parser: (Int) => A) = sheet.parseRow(row)(parser)
 }
