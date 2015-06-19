@@ -140,7 +140,8 @@ object Book {
     workbook(path, stream)
   }
 
-  def poiWorkbook(file: File): PoiWorkbook = workbook(file.getAbsolutePath, new FileInputStream(file))
+  def poiWorkbook(file: File): PoiWorkbook = poiWorkbook(file.getAbsolutePath, file)
+  def poiWorkbook(fileName: String, file: File): PoiWorkbook = workbook(fileName, new FileInputStream(file))
 
   private def workbook(path: String, stream: InputStream): PoiWorkbook = {
     path match {
