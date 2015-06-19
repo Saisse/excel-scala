@@ -31,9 +31,10 @@ class SheetSpec extends FlatSpec with Matchers {
     sheet.string("A5") should be ("12345")
     sheet.string("A6") should be ("0100")
     sheet.string("A7") should be ("0100")
+    sheet.string("A8") should be ("13802425287")
 
     sheet.stringOpt("A4") should be (Some("Aテスト"))
-    sheet.stringOpt("A8") should be (None)
+    sheet.stringOpt("A9") should be (None)
 
     sheet.double("B2") should be (2)
     sheet.double("B3") should be (3.4)

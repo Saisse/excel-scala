@@ -1,9 +1,9 @@
 package com.github.saisse.excel_scala
 
 import java.io.{File, FileInputStream, InputStream}
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
-import org.apache.poi.ss.usermodel.{Sheet => PoiSheet, Workbook => PoiWorkbook, Cell => PoiCell}
-import org.apache.poi.ss.format.CellFormat
+import org.apache.poi.ss.usermodel.{Cell => PoiCell, DataFormatter, Sheet => PoiSheet, Workbook => PoiWorkbook}
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.joda.time.DateTime
 
@@ -18,6 +18,8 @@ class Sheet(sheet: PoiSheet) {
       case true => startRow +: listRows(startRow + 1, end)
     }
   }
+
+  def poiSheet = sheet
 
   def parseRow[A](row: Int)(parser: (Int) => A): A = parser(row)
   def parseRows[A](startRow: Int, end: (Int) => Boolean)(parser: (Int) => A): Seq[A] = {
@@ -45,8 +47,8 @@ class Sheet(sheet: PoiSheet) {
       case PoiCell.CELL_TYPE_FORMULA => c.getRichStringCellValue.getString
       case PoiCell.CELL_TYPE_BLANK => ""
       case PoiCell.CELL_TYPE_NUMERIC => {
-        val cf = CellFormat.getInstance(c.getCellStyle.getDataFormatString)
-        cf.apply(c).text
+        val df = new DataFormatter()
+        df.formatCellValue(c)
       }
     }
   }
