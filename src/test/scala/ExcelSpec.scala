@@ -2,20 +2,30 @@ package com.github.saisse.excel_scala
 
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{FlatSpec, FunSpec, Matchers}
 
-class BookSpec extends FlatSpec with Matchers {
-  it should "read from file path" in {
+class BookSpec extends FunSpec with Matchers {
+
+  it("read xlsx file from file path") {
     val book = Book("./src/test/resources/test.xlsx")
   }
 
-  it should "read from classpath" in {
+  it("read xlsx file with password") {
+    val book = Book("./src/test/resources/password.xlsx", "test")
+  }
+
+  it("read xlsx file with invalid password") {
+    intercept[Exception](Book("./src/test/resources/password.xlsx", "zzz"))
+  }
+
+  it("read xlsx file from classpath") {
     val book = Book("/test.xlsx")
   }
 
-  it should "read xls file" in {
+  it("read xls file") {
     val book = Book("/test.xls")
   }
+
 }
 
 class SheetSpec extends FlatSpec with Matchers {

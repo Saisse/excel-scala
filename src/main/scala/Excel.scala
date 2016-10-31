@@ -3,7 +3,9 @@ package com.github.saisse.excel_scala
 import java.io.{File, FileInputStream, InputStream}
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
-import org.apache.poi.ss.usermodel.{Cell => PoiCell, DataFormatter, Sheet => PoiSheet, Workbook => PoiWorkbook}
+import org.apache.poi.poifs.crypt.{Decryptor, EncryptionInfo}
+import org.apache.poi.poifs.filesystem.POIFSFileSystem
+import org.apache.poi.ss.usermodel.{DataFormatter, Cell => PoiCell, Sheet => PoiSheet, Workbook => PoiWorkbook}
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.joda.time.DateTime
 
@@ -128,26 +130,44 @@ object Book {
     new Book(poiWorkbook(path))
   }
 
+  def apply(path: String, password: String): Book = {
+    new Book(poiWorkbook(path, Some(password)))
+  }
+
   def apply(file: File): Book = {
     new Book(poiWorkbook(file))
   }
 
-  def poiWorkbook(path: String): PoiWorkbook = {
+  def poiWorkbook(path: String, password: Option[String] = None): PoiWorkbook = {
     val stream = new File(path).exists() match {
       case true => new FileInputStream(path)
       case false => getClass().getResourceAsStream(path)
     }
-    workbook(path, stream)
+    workbook(path, stream, password)
   }
 
   def poiWorkbook(file: File): PoiWorkbook = poiWorkbook(file.getAbsolutePath, file)
-  def poiWorkbook(fileName: String, file: File): PoiWorkbook = workbook(fileName, new FileInputStream(file))
+  def poiWorkbook(fileName: String, file: File): PoiWorkbook = workbook(fileName, new FileInputStream(file), None)
 
-  private def workbook(path: String, stream: InputStream): PoiWorkbook = {
+  private def workbook(path: String, stream: InputStream, password: Option[String]): PoiWorkbook = {
+
+    val s = password.map(p => withPassword(stream, p)).getOrElse(stream)
     path match {
-      case p if p.endsWith(".xlsx") => new XSSFWorkbook(stream)
-      case p if p.endsWith(".xls") => new HSSFWorkbook(stream)
+      case p if p.endsWith(".xlsx") => new XSSFWorkbook(s)
+      case p if p.endsWith(".xls") => new HSSFWorkbook(s)
     }
+  }
+
+  private def withPassword(stream: InputStream, password: String): InputStream = {
+    val s = new POIFSFileSystem(stream)
+    val enc = new EncryptionInfo(s)
+    val decryptor = Decryptor.getInstance(enc)
+
+    if(!decryptor.verifyPassword(password)) {
+      throw new Exception("invalid password")
+
+    }
+    decryptor.getDataStream(s)
   }
 }
 
