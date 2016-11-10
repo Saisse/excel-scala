@@ -11,6 +11,7 @@ import org.joda.time.DateTime
 
 class Book(book: PoiWorkbook) {
   def sheet(name: String): Sheet = new Sheet(book.getSheet(name))
+  def sheet(index: Int): Sheet = new Sheet(book.getSheetAt(index))
 }
 
 class Sheet(sheet: PoiSheet) {
@@ -138,6 +139,10 @@ object Book {
     new Book(poiWorkbook(file))
   }
 
+  def apply(file: File, password: String): Book = {
+    new Book(poiWorkbook(file, password))
+  }
+
   def poiWorkbook(path: String, password: Option[String] = None): PoiWorkbook = {
     val stream = new File(path).exists() match {
       case true => new FileInputStream(path)
@@ -147,7 +152,9 @@ object Book {
   }
 
   def poiWorkbook(file: File): PoiWorkbook = poiWorkbook(file.getAbsolutePath, file)
+  def poiWorkbook(file: File, password: String): PoiWorkbook = poiWorkbook(file.getAbsolutePath, file, password)
   def poiWorkbook(fileName: String, file: File): PoiWorkbook = workbook(fileName, new FileInputStream(file), None)
+  def poiWorkbook(fileName: String, file: File, password: String): PoiWorkbook = workbook(fileName, new FileInputStream(file), Some(password))
 
   private def workbook(path: String, stream: InputStream, password: Option[String]): PoiWorkbook = {
 

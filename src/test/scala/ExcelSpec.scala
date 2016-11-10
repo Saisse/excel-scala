@@ -25,7 +25,6 @@ class BookSpec extends FunSpec with Matchers {
   it("read xls file") {
     val book = Book("/test.xls")
   }
-
 }
 
 class SheetSpec extends FlatSpec with Matchers {
