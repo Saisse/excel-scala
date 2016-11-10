@@ -139,6 +139,14 @@ object Book {
     new Book(poiWorkbook(file))
   }
 
+  def apply(fileName: String, file: File): Book = {
+    new Book(poiWorkbook(fileName, file))
+  }
+
+  def apply(fileName: String, file: File, password: String): Book = {
+    new Book(poiWorkbook(fileName, file, password))
+  }
+
   def apply(file: File, password: String): Book = {
     new Book(poiWorkbook(file, password))
   }
