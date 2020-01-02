@@ -4,7 +4,9 @@ name := "excel-scala"
 
 version := "0.1"
 
-scalaVersion := "2.13.5"
+val scala212 = "2.12.10"
+val scala213 = "2.13.6"
+scalaVersion := scala213
 
 libraryDependencies ++= Seq(
    "org.apache.poi" % "poi" % "5.0.0"
@@ -13,4 +15,8 @@ libraryDependencies ++= Seq(
  , "org.scalatest" %% "scalatest" % "3.2.7" % "test"
 )
 
-crossScalaVersions := Seq("2.10.0", "2.11.0", "2.12.0", "2.13.0")
+releaseCrossBuild := true
+
+crossScalaVersions := Seq(scala212, scala213)
+
+publish / skip := true
