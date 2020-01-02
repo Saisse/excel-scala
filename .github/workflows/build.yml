@@ -1,0 +1,23 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Hello world
+      uses: actions/hello-world-javascript-action@master
+      with:
+        who-to-greet: 'Mona the Octocat'
+      id: hello
+    - name: Echo
+      run: echo 'The time was ${{ steps.hello.outputs.time }}.'
+    - name: ls
+      run: ls -la
+    - name: pwd
+      run: pwd
+    - name: buid
+      uses: "Saisse/github-actions-sbt@master"
+      run: sbt compile
