@@ -2,9 +2,11 @@ package com.github.saisse.excel_scala
 
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import org.scalatest.{FlatSpec, FunSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class BookSpec extends FunSpec with Matchers {
+class BookSpec extends AnyFunSpec with Matchers {
 
   it("read xlsx file from file path") {
     val book = Book("./src/test/resources/test.xlsx")
@@ -27,7 +29,7 @@ class BookSpec extends FunSpec with Matchers {
   }
 }
 
-class SheetSpec extends FlatSpec with Matchers {
+class SheetSpec extends AnyFlatSpec with Matchers {
 
   it should "data" in {
 
@@ -90,7 +92,7 @@ class SheetSpec extends FlatSpec with Matchers {
   case class Data(i: Int, s: String)
 }
 
-class CellSpec extends FlatSpec with Matchers {
+class CellSpec extends AnyFlatSpec with Matchers {
   it should "split" in {
     Cell.split("A1") should be ((0, 0))
     Cell.split("B1") should be ((1, 0))

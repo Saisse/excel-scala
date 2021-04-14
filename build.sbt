@@ -4,14 +4,13 @@ name := "excel-scala"
 
 version := "0.1"
 
-scalaVersion := "2.12.6"
-
+scalaVersion := "2.13.5"
 
 libraryDependencies ++= Seq(
-    "org.apache.poi" % "poi" % "3.11"
-  , "org.apache.poi" % "poi-ooxml" % "3.11"
-  , "joda-time" % "joda-time" % "2.5"
-  , "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+   "org.apache.poi" % "poi" % "5.0.0"
+ , "org.apache.poi" % "poi-ooxml" % "5.0.0"
+ , "joda-time" % "joda-time" % "2.10.10"
+ , "org.scalatest" %% "scalatest" % "3.2.7" % "test"
 )
 
-crossScalaVersions := Seq("2.10.0", "2.11.0", "2.12.0")
+crossScalaVersions := Seq("2.10.0", "2.11.0", "2.12.0", "2.13.0")

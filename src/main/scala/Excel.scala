@@ -5,7 +5,7 @@ import java.io.{File, FileInputStream, InputStream}
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.poifs.crypt.{Decryptor, EncryptionInfo}
 import org.apache.poi.poifs.filesystem.POIFSFileSystem
-import org.apache.poi.ss.usermodel.{DataFormatter, Cell => PoiCell, Sheet => PoiSheet, Workbook => PoiWorkbook}
+import org.apache.poi.ss.usermodel.{DataFormatter, Cell => PoiCell, CellType, Sheet => PoiSheet, Workbook => PoiWorkbook}
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.joda.time.DateTime
 
@@ -46,13 +46,12 @@ class Sheet(sheet: PoiSheet) {
     val c = poiCell(address)
 
     c.getCellType() match {
-      case PoiCell.CELL_TYPE_STRING => c.getRichStringCellValue.getString
-      case PoiCell.CELL_TYPE_FORMULA => c.getRichStringCellValue.getString
-      case PoiCell.CELL_TYPE_BLANK => ""
-      case PoiCell.CELL_TYPE_NUMERIC => {
+      case CellType.STRING => c.getRichStringCellValue.getString
+      case CellType.FORMULA => c.getRichStringCellValue.getString
+      case CellType.NUMERIC =>
         val df = new DataFormatter()
         df.formatCellValue(c)
-      }
+      case _ => ""
     }
   }
 
